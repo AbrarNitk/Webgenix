@@ -1,0 +1,3 @@
+# Put all the Django tables names for printing the schema
+#[print_schema]
+#filter = {only_tables = []}

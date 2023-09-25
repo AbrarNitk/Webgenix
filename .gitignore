@@ -1,0 +1,4 @@
+/target
+.idea
+.env
+dj/proj/local_settings.py
