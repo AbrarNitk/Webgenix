@@ -68,7 +68,10 @@ async fn http_main() -> Result<(), Box<dyn std::error::Error + Sync + Send>> {
         let (tcp_stream, _) = listener.accept().await?;
         tokio::task::spawn(async move {
             if let Err(http_err) = hyper::server::conn::Http::new()
+                .http1_only(true)
+                .http1_keep_alive(true)
                 .serve_connection(tcp_stream, HttpService {})
+                .with_upgrades()
                 .await
             {
                 tracing::error!("Error while serving HTTP connection: {}", http_err);

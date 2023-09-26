@@ -19,3 +19,4 @@ tracing-subscriber = { workspace = true }
 tracing-forest = { workspace = true }
 dotenv = "0.15"
 db = { path = "./db" }
+hyper-tungstenite = "0.11"
