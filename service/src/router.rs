@@ -61,8 +61,8 @@ pub async fn handler(
             Ok(response)
         }
         _ => {
-            return Ok(response("NOT-FOUND".to_string(), hyper::StatusCode::NOT_FOUND))
-        },
+            return Ok(response("NOT-FOUND".to_string(), hyper::StatusCode::NOT_FOUND));
+        }
     }
 }
 
