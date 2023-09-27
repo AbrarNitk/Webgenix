@@ -4,7 +4,7 @@ impl hyper::service::Service<hyper::Request<hyper::Body>> for HttpService {
     type Response = hyper::Response<hyper::Body>;
     type Error = hyper::Error;
     type Future = std::pin::Pin<
-        Box<dyn futures::Future<Output=Result<Self::Response, Self::Error>> + Send>,
+        Box<dyn futures::Future<Output = Result<Self::Response, Self::Error>> + Send>,
     >;
 
     fn poll_ready(
@@ -25,7 +25,7 @@ impl hyper::service::Service<hyper::Request<hyper::Body>> for HttpService {
                             "success": false,
                             "message": "INTERNAL_SERVER_ERROR"
                         }))
-                            .expect(""),
+                        .expect(""),
                         hyper::StatusCode::INTERNAL_SERVER_ERROR,
                     ))
                 }
@@ -33,7 +33,6 @@ impl hyper::service::Service<hyper::Request<hyper::Body>> for HttpService {
         })
     }
 }
-
 
 async fn http_main() -> Result<(), Box<dyn std::error::Error + Sync + Send>> {
     // Setting the environment variables

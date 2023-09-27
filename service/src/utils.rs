@@ -11,7 +11,8 @@ pub fn read_port_env() -> u16 {
         Err(_) => "8000".to_string(),
     };
 
-    port.parse().expect(format!("cannot parse port: {port}").as_str())
+    port.parse()
+        .expect(format!("cannot parse port: {port}").as_str())
 }
 
 pub fn is_traced() -> bool {
