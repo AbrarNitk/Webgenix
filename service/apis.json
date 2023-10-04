@@ -1,0 +1,20 @@
+[
+  {
+    "path": "/api/offline/transfer/",
+    "method": "POST",
+    "wait": 200,
+    "response": {
+      "success": true,
+      "data": {}
+    }
+  },
+  {
+    "path": "/api/offline/transfer/sync/",
+    "method": "POST",
+    "wait": 200,
+    "response": {
+      "success": true,
+      "data": {}
+    }
+  }
+]

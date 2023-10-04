@@ -65,10 +65,18 @@ pub async fn handler(
             Ok(response)
         }
         _ => {
-            return Ok(response(
-                "NOT-FOUND".to_string(),
-                hyper::StatusCode::NOT_FOUND,
-            ));
+            let apis = crate::utils::apis().expect("no api file found");
+            match apis.response(req.method().as_str(), req.uri().path()) {
+                Some(r) => {
+                    Ok(response(serde_json::to_string(&r).unwrap(), hyper::StatusCode::OK))
+                }
+                None => {
+                    return Ok(response(
+                        "NOT-FOUND".to_string(),
+                        hyper::StatusCode::NOT_FOUND,
+                    ));
+                }
+            }
         }
     }
 }
