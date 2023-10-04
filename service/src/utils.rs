@@ -40,14 +40,18 @@ pub struct APIs(Vec<API>);
 
 impl APIs {
     pub fn response(&self, method: &str, path: &str) -> Option<APIResponse> {
-        match self.0.iter().find(|api| api.method.eq(method) && api.path.eq(path)) {
+        match self
+            .0
+            .iter()
+            .find(|api| api.method.eq(method) && api.path.eq(path))
+        {
             Some(api) => {
                 if let Some(wait) = api.wait {
                     std::thread::sleep(std::time::Duration::from_millis(wait));
                 }
                 Some(api.response.clone())
             }
-            None => None
+            None => None,
         }
     }
 }

@@ -66,10 +66,14 @@ pub async fn handler(
         }
         _ => {
             let apis = crate::utils::apis().expect("no api file found");
-            match apis.response(req.method().as_str(), req.uri().path()) {
-                Some(r) => {
-                    Ok(response(serde_json::to_string(&r).unwrap(), hyper::StatusCode::OK))
-                }
+            let (parts, body) = req.into_parts();
+            let req_body: serde_json::Value = from_body(body).await.unwrap();
+            tracing::info!(body = serde_json::to_string(&req_body).unwrap());
+            match apis.response(parts.method.as_str(), parts.uri.path()) {
+                Some(r) => Ok(response(
+                    serde_json::to_string(&r).unwrap(),
+                    hyper::StatusCode::OK,
+                )),
                 None => {
                     return Ok(response(
                         "NOT-FOUND".to_string(),

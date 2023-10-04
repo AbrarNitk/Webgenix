@@ -1,15 +1,15 @@
 [
   {
-    "path": "/api/offline/transfer/",
+    "path": "/v1/api/offline/transfer/",
     "method": "POST",
-    "wait": 200,
+    "wait": 5000,
     "response": {
       "success": true,
       "data": {}
     }
   },
   {
-    "path": "/api/offline/transfer/sync/",
+    "path": "/v1/api/offline/transfer/sync/",
     "method": "POST",
     "wait": 200,
     "response": {
