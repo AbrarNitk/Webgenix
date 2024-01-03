@@ -9,12 +9,59 @@
     }
   },
   {
-    "path": "/v1/api/offline/transfer/sync/",
+    "path": "/v1/api/offline/sync/",
     "method": "POST",
     "wait": 200,
     "response": {
       "success": true,
-      "data": {}
+      "data": {
+        "version": 1,
+        "certificates": [],
+        "transactions": [
+          [
+            {
+              "previous_tx_hash": "some-pr",
+              "amount": 1000,
+              "from_did": "0x6469643a6e62673a62616e6b0000000000000000000000000000000000000000",
+              "to_did": "0x6469643a6e62673a6d6f73617461343033380000000000000000000000000000",
+              "issued_at": 212212,
+              "expiry_at": 312312,
+              "tx_hash": "5",
+              "signed_tx_hash": "2"
+            },
+            {
+              "previous_tx_hash": "some-pr",
+              "amount": 2000,
+              "from_did": "0x6469643a6e62673a62616e6b0000000000000000000000000000000000000000",
+              "to_did": "0x6469643a6e62673a6d6f73617461343033380000000000000000000000000000",
+              "issued_at": 212212,
+              "expiry_at": 312312,
+              "tx_hash": "6",
+              "signed_tx_hash": "2"
+            },
+            {
+              "previous_tx_hash": "some-pr",
+              "amount": 3000,
+              "from_did": "0x6469643a6e62673a62616e6b0000000000000000000000000000000000000000",
+              "to_did": "0x6469643a6e62673a6d6f73617461343033380000000000000000000000000000",
+              "issued_at": 212212,
+              "expiry_at": 312312,
+              "tx_hash": "7",
+              "signed_tx_hash": "2"
+            },
+            {
+              "previous_tx_hash": "some-pr",
+              "amount": 3000,
+              "from_did": "0x6469643a6e62673a62616e6b0000000000000000000000000000000000000000",
+              "to_did": "0x6469643a6e62673a6d6f73617461343033380000000000000000000000000000",
+              "issued_at": 212212,
+              "expiry_at": 312312,
+              "tx_hash": "8",
+              "signed_tx_hash": "2"
+            }
+          ]
+        ]
+      }
     }
   }
 ]
