@@ -4,7 +4,7 @@ impl hyper::service::Service<hyper::Request<hyper::Body>> for HttpService {
     type Response = hyper::Response<hyper::Body>;
     type Error = hyper::Error;
     type Future = std::pin::Pin<
-        Box<dyn futures::Future<Output=Result<Self::Response, Self::Error>> + Send>,
+        Box<dyn futures::Future<Output = Result<Self::Response, Self::Error>> + Send>,
     >;
 
     fn poll_ready(
@@ -25,7 +25,7 @@ impl hyper::service::Service<hyper::Request<hyper::Body>> for HttpService {
                             "success": false,
                             "message": "INTERNAL_SERVER_ERROR"
                         }))
-                            .expect(""),
+                        .expect(""),
                         hyper::StatusCode::INTERNAL_SERVER_ERROR,
                     ))
                 }
@@ -33,7 +33,6 @@ impl hyper::service::Service<hyper::Request<hyper::Body>> for HttpService {
         })
     }
 }
-
 
 async fn http_main() -> Result<(), Box<dyn std::error::Error + Sync + Send>> {
     // Setting the environment variables
@@ -68,7 +67,10 @@ async fn http_main() -> Result<(), Box<dyn std::error::Error + Sync + Send>> {
         let (tcp_stream, _) = listener.accept().await?;
         tokio::task::spawn(async move {
             if let Err(http_err) = hyper::server::conn::Http::new()
+                .http1_only(true)
+                .http1_keep_alive(true)
                 .serve_connection(tcp_stream, HttpService {})
+                .with_upgrades()
                 .await
             {
                 tracing::error!("Error while serving HTTP connection: {}", http_err);
