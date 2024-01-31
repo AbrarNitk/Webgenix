@@ -1,3 +1,5 @@
+use std::io::Read;
+
 #[derive(thiserror::Error, Debug)]
 pub enum BodyError {
     #[error("HyperBodyReadError: {}", _0)]
@@ -37,8 +39,26 @@ pub async fn handler(
             );
             Ok(response)
         }
+        (&hyper::Method::GET, "/conver/settings/") => {
+            let mut response = hyper::Response::new(hyper::Body::empty());
+            *response.body_mut() = hyper::Body::from(conver_settings());
+            *response.status_mut() = hyper::StatusCode::OK;
+            response.headers_mut().append(
+                hyper::header::CONTENT_TYPE,
+                hyper::http::HeaderValue::from_str("text/plain").unwrap(), // TODO: Remove unwrap
+            );
+            Ok(response)
+        }
         _ => todo!(),
     }
+}
+
+
+pub fn conver_settings() -> String {
+    let mut file = std::fs::File::options().read(true).open("conver-settings.toml").unwrap();
+    let mut buffer = String::new();
+    file.read_to_string(&mut buffer).unwrap();
+    buffer
 }
 
 pub fn response(body: String, status: hyper::StatusCode) -> hyper::Response<hyper::Body> {
