@@ -65,7 +65,7 @@ pub async fn handler(
             );
             Ok(response)
         }
-        (&hyper::Method::POST, "/api/get") => {
+        (&hyper::Method::GET, "/api/get") => {
             println!("this is get call");
             let mut response = hyper::Response::new(hyper::Body::empty());
             *response.body_mut() = req.into_body();
@@ -109,12 +109,14 @@ pub async fn handler(
 
 pub fn conver_settings() -> String {
     use std::io::Read;
-    let mut file = std::fs::File::options().read(true).open("conver-settings.toml").unwrap();
+    let mut file = std::fs::File::options()
+        .read(true)
+        .open("conver-settings.toml")
+        .unwrap();
     let mut buffer = String::new();
     file.read_to_string(&mut buffer).unwrap();
     buffer
 }
-
 
 type Error = Box<dyn std::error::Error + Send + Sync + 'static>;
 
