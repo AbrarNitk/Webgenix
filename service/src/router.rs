@@ -54,9 +54,21 @@ pub async fn handler(
                 ))
             }
         },
-        (&hyper::Method::POST, "/") => {
+        (&hyper::Method::POST, "/api/post") => {
+            println!("this is post call");
             let mut response = hyper::Response::new(hyper::Body::empty());
-            *response.body_mut() = hyper::Body::from("POST Response");
+            *response.body_mut() = req.into_body();
+            *response.status_mut() = hyper::StatusCode::OK;
+            response.headers_mut().append(
+                hyper::header::CONTENT_TYPE,
+                hyper::http::HeaderValue::from_str("application/json").unwrap(), // TODO: Remove unwrap
+            );
+            Ok(response)
+        }
+        (&hyper::Method::POST, "/api/get") => {
+            println!("this is get call");
+            let mut response = hyper::Response::new(hyper::Body::empty());
+            *response.body_mut() = req.into_body();
             *response.status_mut() = hyper::StatusCode::OK;
             response.headers_mut().append(
                 hyper::header::CONTENT_TYPE,
