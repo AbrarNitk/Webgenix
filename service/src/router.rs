@@ -1,4 +1,5 @@
 use futures::{SinkExt, StreamExt};
+use hyper::Body;
 
 #[derive(thiserror::Error, Debug)]
 pub enum BodyError {
@@ -56,8 +57,12 @@ pub async fn handler(
         },
         (&hyper::Method::POST, "/api/post") => {
             println!("this is post call");
+            let body = req.into_body();
+            let bytes = hyper::body::to_bytes(body).await.unwrap();
+            let body: serde_json::Value = serde_json::from_slice(&bytes)?;
+            println!("{:?}", body);
             let mut response = hyper::Response::new(hyper::Body::empty());
-            *response.body_mut() = req.into_body();
+            *response.body_mut() = Body::from(bytes).into();
             *response.status_mut() = hyper::StatusCode::OK;
             response.headers_mut().append(
                 hyper::header::CONTENT_TYPE,
