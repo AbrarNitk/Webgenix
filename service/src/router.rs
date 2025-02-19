@@ -75,7 +75,7 @@ pub async fn handler(
                 "headers": req_headers
             });
 
-            println!("{:?}", body);
+            println!("{:#?}", body);
 
             let response_body = serde_json::to_vec(&body)?;
             let mut response = hyper::Response::new(Body::from(response_body).into());
