@@ -1,5 +1,6 @@
 use futures::{SinkExt, StreamExt};
 use hyper::Body;
+use std::collections::HashMap;
 
 #[derive(thiserror::Error, Debug)]
 pub enum BodyError {
@@ -9,7 +10,7 @@ pub enum BodyError {
     SerdeDeserialize(#[from] serde_json::Error),
 }
 
-async fn from_body<T: serde::de::DeserializeOwned>(b: hyper::Body) -> Result<T, BodyError> {
+async fn from_body<T: serde::de::DeserializeOwned>(b: Body) -> Result<T, BodyError> {
     let b = hyper::body::to_bytes(b).await?;
     Ok(serde_json::from_slice(b.as_ref())?)
 }
@@ -56,18 +57,34 @@ pub async fn handler(
             }
         },
         (&hyper::Method::POST, "/api/post") => {
-            println!("this is post call");
-            let body = req.into_body();
-            let bytes = hyper::body::to_bytes(body).await.unwrap();
-            let body: serde_json::Value = serde_json::from_slice(&bytes)?;
+            let query = req.uri().query().map(|x| x.to_owned());
+            let headers = req.headers().clone();
+
+            let body_bytes = hyper::body::to_bytes(req.into_body()).await.unwrap();
+            let body: serde_json::Value = serde_json::from_slice(&body_bytes)?;
+
+            let mut req_headers = HashMap::new();
+            for (header_name, v) in headers {
+                if let Some(name) = header_name {
+                    req_headers.insert(name.to_string(), v.to_str().unwrap().to_string());
+                }
+            }
+            let body = serde_json::json!({
+                "body": body,
+                "query": query,
+                "headers": req_headers
+            });
+
             println!("{:?}", body);
-            let mut response = hyper::Response::new(hyper::Body::empty());
-            *response.body_mut() = Body::from(bytes).into();
+
+            let response_body = serde_json::to_vec(&body)?;
+            let mut response = hyper::Response::new(Body::from(response_body).into());
             *response.status_mut() = hyper::StatusCode::OK;
             response.headers_mut().append(
                 hyper::header::CONTENT_TYPE,
                 hyper::http::HeaderValue::from_str("application/json").unwrap(), // TODO: Remove unwrap
             );
+
             Ok(response)
         }
         (&hyper::Method::GET, "/api/get") => {
@@ -198,7 +215,7 @@ pub async fn serve_websocket(websocket: hyper_tungstenite::HyperWebsocket) -> Re
                     println!("Received close message");
                 }
             }
-            hyper_tungstenite::tungstenite::Message::Frame(msg) => {
+            hyper_tungstenite::tungstenite::Message::Frame(_msg) => {
                 unreachable!();
             }
         }

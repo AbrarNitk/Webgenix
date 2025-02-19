@@ -68,6 +68,7 @@ async fn http_main() -> Result<(), Box<dyn std::error::Error + Sync + Send>> {
         tokio::task::spawn(async move {
             if let Err(http_err) = hyper::server::conn::Http::new()
                 .http1_only(true)
+                .http2_max_header_list_size(16 * 10 * 1024)
                 .http1_keep_alive(true)
                 .serve_connection(tcp_stream, HttpService {})
                 .with_upgrades()
